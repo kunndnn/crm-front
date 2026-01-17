@@ -1,20 +1,20 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom"
-import { ThemeProvider } from "./components/theme-provider"
-import { AuthLayout } from "./layouts/auth-layout"
-import { DashboardLayout } from "./layouts/dashboard-layout"
-import { LoginPage } from "./pages/auth/login"
-import { OverviewPage } from "./pages/dashboard/overview"
-import { CustomersPage } from "./pages/customers/customer-list"
-import { LeadsPage } from "./pages/leads/leads-pipeline"
-import { TasksPage } from "./pages/tasks/tasks-list"
-import { SettingsPage } from "./pages/settings/settings-page"
-import { useAuth } from "./hooks/use-auth"
-import type { JSX } from "react"
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { ThemeProvider } from "./components/theme-provider";
+import { AuthLayout } from "./layouts/auth-layout";
+import { DashboardLayout } from "./layouts/dashboard-layout";
+import { LoginPage } from "./pages/auth/login";
+import { OverviewPage } from "./pages/dashboard/overview";
+import { CustomersPage } from "./pages/customers/customer-list";
+import { LeadsPage } from "./pages/leads/leads-pipeline";
+import { TasksPage } from "./pages/tasks/tasks-list";
+import { SettingsPage } from "./pages/settings/settings-page";
+import { useAuth } from "./hooks/use-auth";
+import type { JSX } from "react";
 
 // Protected Route Wrapper
 function ProtectedRoute({ children }: { children: JSX.Element }) {
-  const isAuthenticated = useAuth((state) => state.isAuthenticated)
-  return isAuthenticated ? children : <Navigate to="/auth/login" replace />
+  const isAuthenticated = useAuth((state) => state.isAuthenticated);
+  return isAuthenticated ? children : <Navigate to="/auth/login" replace />;
 }
 
 function App() {
@@ -25,7 +25,10 @@ function App() {
           {/* Public Routes */}
           <Route path="/auth" element={<AuthLayout />}>
             <Route path="login" element={<LoginPage />} />
-            <Route path="forgot-password" element={<div>Forgot Password Page</div>} />
+            <Route
+              path="forgot-password"
+              element={<div>Forgot Password Page</div>}
+            />
           </Route>
 
           {/* Protected Routes */}
@@ -49,7 +52,7 @@ function App() {
         </Routes>
       </BrowserRouter>
     </ThemeProvider>
-  )
+  );
 }
 
-export default App
+export default App;

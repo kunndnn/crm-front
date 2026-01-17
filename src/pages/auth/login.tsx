@@ -1,35 +1,35 @@
-import { useState } from "react"
-import { useNavigate, Link } from "react-router-dom"
-import { useAuth } from "../../hooks/use-auth"
-import { authService } from "../../services/auth.service"
-import { Button } from "../../components/ui/button"
-import { Input } from "../../components/ui/input"
-import { Loader } from "../../components/ui/loader"
+import { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import { useAuth } from "../../hooks/use-auth";
+import { authService } from "../../services/auth.service";
+import { Button } from "../../components/ui/button";
+import { Input } from "../../components/ui/input";
+import { Loader } from "../../components/ui/loader";
 
 export function LoginPage() {
-  const [email, setEmail] = useState("demo@crm.com")
-  const [password, setPassword] = useState("password")
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState("")
-  
-  const navigate = useNavigate()
-  const login = useAuth((state) => state.login)
+  const [email, setEmail] = useState("demo@crm.com");
+  const [password, setPassword] = useState("password");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const navigate = useNavigate();
+  const login = useAuth((state) => state.login);
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setLoading(true)
-    setError("")
+    e.preventDefault();
+    setLoading(true);
+    setError("");
 
     try {
-      const { user, token } = await authService.login(email, password)
-      login(user, token)
-      navigate("/dashboard")
+      const { user, token } = await authService.login(email, password);
+      login(user, token);
+      navigate("/dashboard");
     } catch (err) {
-      setError("Invalid credentials. Try demo@crm.com / password")
+      setError("Invalid credentials. Try demo@crm.com / password");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   return (
     <form className="space-y-6" onSubmit={handleSubmit}>
@@ -38,7 +38,7 @@ export function LoginPage() {
           {error}
         </div>
       )}
-      
+
       <div>
         <label
           htmlFor="email"
@@ -98,8 +98,8 @@ export function LoginPage() {
       </div>
 
       <div className="text-center text-sm text-muted-foreground">
-         Use <strong>demo@crm.com</strong> / <strong>password</strong>
+        Use <strong>demo@crm.com</strong> / <strong>password</strong>
       </div>
     </form>
-  )
+  );
 }

@@ -1,70 +1,93 @@
-import { useEffect, useState } from "react"
-import { Plus, Search, MoreHorizontal, Pencil, Trash } from "lucide-react"
-import { customerService } from "../../services/customer.service"
-import type { Customer } from "../../services/customer.service"
-import { Button } from "../../components/ui/button"
-import { Input } from "../../components/ui/input"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../components/ui/table"
-import { Badge } from "../../components/ui/badge"
-import { Avatar } from "../../components/ui/avatar"
-import { Dropdown } from "../../components/ui/dropdown"
-import { Loader } from "../../components/ui/loader"
-import { EmptyState } from "../../components/ui/empty-state"
-import { CustomerDialog } from "./customer-dialog"
+import { useEffect, useState } from "react";
+import { Plus, Search, MoreHorizontal, Pencil, Trash } from "lucide-react";
+import { customerService } from "../../services/customer.service";
+import type { Customer } from "../../services/customer.service";
+import { Button } from "../../components/ui/button";
+import { Input } from "../../components/ui/input";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "../../components/ui/table";
+import { Badge } from "../../components/ui/badge";
+import { Avatar } from "../../components/ui/avatar";
+import { Dropdown } from "../../components/ui/dropdown";
+import { Loader } from "../../components/ui/loader";
+import { EmptyState } from "../../components/ui/empty-state";
+import { Pagination } from "../../components/ui/pagination";
+import { Select } from "../../components/ui/select";
+import { CustomerDialog } from "./customer-dialog";
 
 export function CustomersPage() {
-  const [customers, setCustomers] = useState<Customer[]>([])
-  const [loading, setLoading] = useState(true)
-  const [search, setSearch] = useState("")
-  
-  const [dialogOpen, setDialogOpen] = useState(false)
-  const [editingCustomer, setEditingCustomer] = useState<Customer | undefined>(undefined)
+  const [customers, setCustomers] = useState<Customer[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [total, setTotal] = useState(0);
+
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [editingCustomer, setEditingCustomer] = useState<Customer | undefined>(
+    undefined,
+  );
 
   const fetchCustomers = async () => {
-    setLoading(true)
+    setLoading(true);
     try {
-      const data = await customerService.getCustomers()
-      setCustomers(data)
+      const { data, total } = await customerService.getCustomers(
+        page,
+        pageSize,
+        debouncedSearch,
+      );
+      setCustomers(data);
+      setTotal(total);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   useEffect(() => {
-    fetchCustomers()
-  }, [])
+    const timer = setTimeout(() => {
+      setPage(1);
+      setDebouncedSearch(search);
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [search]);
 
-  const filteredCustomers = customers.filter((c) =>
-    c.name.toLowerCase().includes(search.toLowerCase()) ||
-    c.email.toLowerCase().includes(search.toLowerCase()) ||
-    c.company.toLowerCase().includes(search.toLowerCase())
-  )
+  useEffect(() => {
+    fetchCustomers();
+  }, [page, pageSize, debouncedSearch]);
 
   const handleSave = async (customer: Customer | Omit<Customer, "id">) => {
     if ("id" in customer && customer.id) {
-       await customerService.updateCustomer(customer.id, customer)
+      await customerService.updateCustomer(customer.id, customer);
     } else {
-       await customerService.createCustomer(customer)
+      await customerService.createCustomer(customer);
     }
-    await fetchCustomers()
-  }
+    await fetchCustomers();
+  };
 
   const handleDelete = async (id: string) => {
     if (confirm("Are you sure you want to delete this customer?")) {
-      await customerService.deleteCustomer(id)
-      await fetchCustomers()
+      await customerService.deleteCustomer(id);
+      await fetchCustomers();
     }
-  }
+  };
 
   const openCreate = () => {
-     setEditingCustomer(undefined)
-     setDialogOpen(true)
-  }
+    setEditingCustomer(undefined);
+    setDialogOpen(true);
+  };
 
   const openEdit = (customer: Customer) => {
-     setEditingCustomer(customer)
-     setDialogOpen(true)
-  }
+    setEditingCustomer(customer);
+    setDialogOpen(true);
+  };
 
   return (
     <div className="space-y-6">
@@ -77,13 +100,13 @@ export function CustomersPage() {
 
       <div className="flex items-center space-x-2">
         <div className="relative flex-1 max-w-sm">
-           <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-           <Input
-             placeholder="Search customers..."
-             className="pl-9"
-             value={search}
-             onChange={(e) => setSearch(e.target.value)}
-           />
+          <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+          <Input
+            placeholder="Search customers..."
+            className="pl-9"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
         </div>
       </div>
 
@@ -91,15 +114,21 @@ export function CustomersPage() {
         <div className="flex h-64 items-center justify-center">
           <Loader size="lg" />
         </div>
-      ) : filteredCustomers.length === 0 ? (
+      ) : customers.length === 0 ? (
         <EmptyState
           title="No customers found"
-          description={search ? "Try adjusting your search terms." : "Get started by creating a new customer."}
-          action={!search && (
-            <Button onClick={openCreate}>
-              <Plus className="mr-2 h-4 w-4" /> Add Customer
-            </Button>
-          )}
+          description={
+            search
+              ? "Try adjusting your search terms."
+              : "Get started by creating a new customer."
+          }
+          action={
+            !search && (
+              <Button onClick={openCreate}>
+                <Plus className="mr-2 h-4 w-4" /> Add Customer
+              </Button>
+            )
+          }
         />
       ) : (
         <div className="rounded-md border bg-card">
@@ -113,17 +142,19 @@ export function CustomersPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filteredCustomers.map((customer) => (
+              {customers.map((customer) => (
                 <TableRow key={customer.id}>
                   <TableCell>
                     <div className="flex items-center gap-3">
                       <Avatar
-                         src={`https://i.pravatar.cc/150?u=${customer.email}`}
-                         fallback={customer.name.substring(0, 2).toUpperCase()}
+                        src={`https://i.pravatar.cc/150?u=${customer.email}`}
+                        fallback={customer.name.substring(0, 2).toUpperCase()}
                       />
                       <div className="flex flex-col">
-                         <span className="font-medium">{customer.name}</span>
-                         <span className="text-xs text-muted-foreground">{customer.email} • {customer.company}</span>
+                        <span className="font-medium">{customer.name}</span>
+                        <span className="text-xs text-muted-foreground">
+                          {customer.email} • {customer.company}
+                        </span>
                       </div>
                     </div>
                   </TableCell>
@@ -133,8 +164,8 @@ export function CustomersPage() {
                         customer.status === "active"
                           ? "success"
                           : customer.status === "lead"
-                          ? "warning"
-                          : "secondary"
+                            ? "warning"
+                            : "secondary"
                       }
                     >
                       {customer.status}
@@ -150,16 +181,16 @@ export function CustomersPage() {
                       }
                       align="right"
                       items={[
-                        { 
-                           label: "Edit", 
-                           icon: <Pencil />, 
-                           onClick: () => openEdit(customer) 
+                        {
+                          label: "Edit",
+                          icon: <Pencil />,
+                          onClick: () => openEdit(customer),
                         },
-                        { 
-                           label: "Delete", 
-                           icon: <Trash />, 
-                           onClick: () => handleDelete(customer.id),
-                           disabled: false 
+                        {
+                          label: "Delete",
+                          icon: <Trash />,
+                          onClick: () => handleDelete(customer.id),
+                          disabled: false,
                         },
                       ]}
                     />
@@ -168,6 +199,30 @@ export function CustomersPage() {
               ))}
             </TableBody>
           </Table>
+
+          <div className="flex items-center justify-between p-4 border-t">
+            <div className="w-[180px]">
+              <Select
+                value={{ value: pageSize, label: `${pageSize} per page` }}
+                onChange={(option) => {
+                  setPageSize(Number(option.value));
+                  setPage(1);
+                }}
+                options={[
+                  { value: 10, label: "10 per page" },
+                  { value: 25, label: "25 per page" },
+                  { value: 50, label: "50 per page" },
+                  { value: 100, label: "100 per page" },
+                ]}
+              />
+            </div>
+
+            <Pagination
+              currentPage={page}
+              totalPages={Math.ceil(total / pageSize)}
+              onPageChange={setPage}
+            />
+          </div>
         </div>
       )}
 
@@ -178,5 +233,5 @@ export function CustomersPage() {
         onSave={handleSave}
       />
     </div>
-  )
+  );
 }

@@ -1,14 +1,14 @@
-import { Menu, Sun, Moon, User } from "lucide-react"
-import { useTheme } from "../components/theme-provider"
-import { Button } from "../components/ui/button"
-import { Dropdown } from "../components/ui/dropdown"
+import { Menu, Sun, Moon, User } from "lucide-react";
+import { useTheme } from "../components/theme-provider";
+import { Button } from "../components/ui/button";
+import { Dropdown } from "../components/ui/dropdown";
 
 interface TopbarProps {
-  onMenuClick: () => void
+  onMenuClick: () => void;
 }
 
 export function Topbar({ onMenuClick }: TopbarProps) {
-  const { theme, setTheme } = useTheme()
+  const { theme, setTheme } = useTheme();
 
   return (
     <header className="sticky top-0 z-30 flex h-16 w-full items-center justify-between border-b bg-background/95 px-6 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -36,11 +36,11 @@ export function Topbar({ onMenuClick }: TopbarProps) {
 
         <Dropdown
           trigger={
-             <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-                <span className="flex h-full w-full items-center justify-center rounded-full bg-muted">
-                   <User className="h-4 w-4" />
-                </span>
-             </Button>
+            <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+              <span className="flex h-full w-full items-center justify-center rounded-full bg-muted">
+                <User className="h-4 w-4" />
+              </span>
+            </Button>
           }
           items={[
             { label: "Profile", href: "/settings" },
@@ -50,5 +50,5 @@ export function Topbar({ onMenuClick }: TopbarProps) {
         />
       </div>
     </header>
-  )
+  );
 }

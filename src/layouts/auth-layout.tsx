@@ -1,5 +1,5 @@
-import { Outlet } from "react-router-dom"
-import { LayoutDashboard } from "lucide-react"
+import { Outlet } from "react-router-dom";
+import { LayoutDashboard } from "lucide-react";
 
 export function AuthLayout() {
   return (
@@ -19,5 +19,5 @@ export function AuthLayout() {
         </div>
       </div>
     </div>
-  )
+  );
 }

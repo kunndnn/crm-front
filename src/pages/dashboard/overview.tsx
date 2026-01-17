@@ -1,5 +1,10 @@
-import { Users, DollarSign, Activity, CreditCard } from "lucide-react"
-import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card"
+import { Users, DollarSign, Activity, CreditCard } from "lucide-react";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "../../components/ui/card";
 
 export function OverviewPage() {
   const stats = [
@@ -27,14 +32,14 @@ export function OverviewPage() {
       description: "+201 since last hour",
       icon: Activity,
     },
-  ]
+  ];
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between space-y-2">
         <h2 className="text-3xl font-bold tracking-tight">Dashboard</h2>
       </div>
-      
+
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         {stats.map((stat) => (
           <Card key={stat.title}>
@@ -53,7 +58,7 @@ export function OverviewPage() {
           </Card>
         ))}
       </div>
-      
+
       {/* Placeholder for Recent Activity */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
         <Card className="col-span-4">
@@ -62,7 +67,7 @@ export function OverviewPage() {
           </CardHeader>
           <CardContent className="pl-2">
             <div className="h-[200px] flex items-center justify-center text-muted-foreground">
-               Chart Placeholder
+              Chart Placeholder
             </div>
           </CardContent>
         </Card>
@@ -72,31 +77,43 @@ export function OverviewPage() {
           </CardHeader>
           <CardContent>
             <div className="space-y-8">
-               <div className="flex items-center">
-                  <div className="ml-4 space-y-1">
-                     <p className="text-sm font-medium leading-none">Olivia Martin</p>
-                     <p className="text-sm text-muted-foreground">olivia.martin@email.com</p>
-                  </div>
-                  <div className="ml-auto font-medium">+$1,999.00</div>
-               </div>
-               <div className="flex items-center">
-                  <div className="ml-4 space-y-1">
-                     <p className="text-sm font-medium leading-none">Jackson Lee</p>
-                     <p className="text-sm text-muted-foreground">jackson.lee@email.com</p>
-                  </div>
-                  <div className="ml-auto font-medium">+$39.00</div>
-               </div>
-               <div className="flex items-center">
-                  <div className="ml-4 space-y-1">
-                     <p className="text-sm font-medium leading-none">Isabella Nguyen</p>
-                     <p className="text-sm text-muted-foreground">isabella.nguyen@email.com</p>
-                  </div>
-                  <div className="ml-auto font-medium">+$299.00</div>
-               </div>
+              <div className="flex items-center">
+                <div className="ml-4 space-y-1">
+                  <p className="text-sm font-medium leading-none">
+                    Olivia Martin
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    olivia.martin@email.com
+                  </p>
+                </div>
+                <div className="ml-auto font-medium">+$1,999.00</div>
+              </div>
+              <div className="flex items-center">
+                <div className="ml-4 space-y-1">
+                  <p className="text-sm font-medium leading-none">
+                    Jackson Lee
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    jackson.lee@email.com
+                  </p>
+                </div>
+                <div className="ml-auto font-medium">+$39.00</div>
+              </div>
+              <div className="flex items-center">
+                <div className="ml-4 space-y-1">
+                  <p className="text-sm font-medium leading-none">
+                    Isabella Nguyen
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    isabella.nguyen@email.com
+                  </p>
+                </div>
+                <div className="ml-auto font-medium">+$299.00</div>
+              </div>
             </div>
           </CardContent>
         </Card>
       </div>
     </div>
-  )
+  );
 }
